@@ -1,11 +1,30 @@
 // CV component
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 function CV() {
 
 	// URL for API calls related to CV
 	const cvURL = process.env.REACT_APP_BACKEND_URL + "/cv";
+	const [cvHTML, setCvHTML] = useState(null);
 
+  useEffect(() => {
+    const fetchRenderedCV = async () => {
+      try {
+        const response = await fetch(cvURL + "/rendered");
+        if (response.ok) {
+          const html = await response.text();
+          setCvHTML(html);
+        } else {
+          console.error("Failed to fetch rendered CV:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching rendered CV:", error);
+      }
+    };
+
+    fetchRenderedCV();
+  }, [cvURL]);
 	
 	const handleDownload = async (response) => {
 		const downloadToast = toast.loading('Downloading CV...');	
@@ -58,8 +77,9 @@ function CV() {
 		<div className="Page" id="cv">
 			<span className="Content">
 				<h2>CV</h2>
-				<div className="CV">
-				</div>
+				<div className="CV"
+					dangerouslySetInnerHTML={{ __html: cvHTML || '<p>waiting for CV...</p>' }}
+				/>
 				{/* Download button */}
 				<button onClick={handleDownload}>
 					Download as PDF

@@ -40,5 +40,15 @@ router.get('/view', async (req, res) => {
 	file.pipe(res);
 });
 
+router.get('/rendered', async (req, res) => {
+	const htmlPath = path.join(__dirname, '..', 'public', 'cv', 'cv.html');
+
+	// Ensure the file exists
+	if (fs.existsSync(htmlPath)) {
+		res.sendFile(htmlPath);
+	} else {
+		res.status(404).send('CV HTML file not found');
+	}
+});
 
 module.exports = router;

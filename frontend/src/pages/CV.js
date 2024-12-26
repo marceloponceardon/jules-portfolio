@@ -17,9 +17,11 @@ function CV() {
           setCvHTML(html);
         } else {
           console.error("Failed to fetch rendered CV:", response.status);
+					setCvHTML("<p>Failed to fetch rendered CV: " + response.status + "</p>");
         }
       } catch (error) {
         console.error("Error fetching rendered CV:", error);
+				setCvHTML("<p>Failed to fetch rendered CV: " + error + "</p>");
       }
     };
 

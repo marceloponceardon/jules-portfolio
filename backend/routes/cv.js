@@ -24,22 +24,7 @@ router.get('/download', async (req, res) => {
 	file.pipe(res);
 });
 
-// Serve the cv.pdf file to be viewed in the browser in an iframe
-// This is used in the contact page
-router.get('/view', async (req, res) => {
-	const filePath = path.join(__dirname, '..', 'public', 'cv', 'cv.pdf');
-	try {
-		fs.accessSync(filePath, fs.constants.R_OK);
-	}	catch (err) {
-		console.error(err);
-		res.status(404).send('File not found');
-		return;
-	}
-	const file = fs.createReadStream(filePath);
-	res.setHeader('Content-Type', 'application/pdf');
-	file.pipe(res);
-});
-
+// Serve the "rendered" CV - that is the CV in HTML rather than in PDF
 router.get('/rendered', async (req, res) => {
 	const htmlPath = path.join(__dirname, '..', 'public', 'cv', 'cv.html');
 

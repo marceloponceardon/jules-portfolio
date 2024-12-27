@@ -28,12 +28,18 @@ router.get('/download', async (req, res) => {
 router.get('/rendered', async (req, res) => {
 	const htmlPath = path.join(__dirname, '..', 'public', 'cv', 'cv.html');
 
-	// Ensure the file exists
-	if (fs.existsSync(htmlPath)) {
-		res.sendFile(htmlPath);
-	} else {
-		res.status(404).send('CV HTML file not found');
-	}
+	// Try to send the file if it exists
+	try {
+		fs.accessSync(htmlPath, fs.constants.R_OK);
+	} catch (err) {
+		// TODO: Try to find the unconverted file and turn into HTML file
+		console.error(err);
+		res.status(404).send('File not found');
+		return;
+	}	
+	const file = fs.createReadStream(htmlPath);
+	res.setHeader('Content-Type', 'text/html');
+	file.pipe(res);
 });
 
 module.exports = router;
